@@ -1,0 +1,5 @@
+﻿CreateDispatcherQueueController
+DISPATCHERQUEUE_THREAD_APARTMENTTYPE
+DISPATCHERQUEUE_THREAD_TYPE
+ICompositorDesktopInterop
+ICompositorInterop

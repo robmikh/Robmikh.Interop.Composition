@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Robmikh.Interop.Composition
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApp", "TestApp\TestApp.vcxproj", "{6A9D861F-4642-4CEA-9786-2C5CAB0BC7B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedTestApp", "ManagedTestApp\ManagedTestApp.csproj", "{909A1091-3DBD-4C12-A767-7C23F1391001}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -51,6 +53,18 @@ Global
 		{6A9D861F-4642-4CEA-9786-2C5CAB0BC7B0}.Release|x64.Build.0 = Release|x64
 		{6A9D861F-4642-4CEA-9786-2C5CAB0BC7B0}.Release|x86.ActiveCfg = Release|Win32
 		{6A9D861F-4642-4CEA-9786-2C5CAB0BC7B0}.Release|x86.Build.0 = Release|Win32
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|ARM.ActiveCfg = Debug|ARM32
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|ARM.Build.0 = Debug|ARM32
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|ARM64.Build.0 = Debug|ARM64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|x64.ActiveCfg = Debug|x64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|x64.Build.0 = Debug|x64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|x86.ActiveCfg = Debug|x86
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Debug|x86.Build.0 = Debug|x86
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Release|ARM.ActiveCfg = Release|x64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Release|ARM64.ActiveCfg = Release|x64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Release|x64.ActiveCfg = Release|x64
+		{909A1091-3DBD-4C12-A767-7C23F1391001}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
