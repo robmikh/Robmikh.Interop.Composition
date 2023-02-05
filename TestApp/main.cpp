@@ -33,15 +33,32 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     target.Root(root);
 
     // Effects
-    auto effect = winrt::ColorSourceEffect();
-    effect.Color(winrt::Colors::LightSeaGreen());
-    auto effectFactory = compositor.CreateEffectFactory(effect);
-    auto effectBrush = effectFactory.CreateBrush();
 
-    auto effectVisual = compositor.CreateSpriteVisual();
-    effectVisual.Size({ 200, 200 });
-    effectVisual.Brush(effectBrush);
-    root.Children().InsertAtTop(effectVisual);
+    // Color
+    auto colorEffect = winrt::ColorSourceEffect();
+    colorEffect.Color(winrt::Colors::LightSeaGreen());
+    auto colorEffectFactory = compositor.CreateEffectFactory(colorEffect);
+    auto colorEffectBrush = colorEffectFactory.CreateBrush();
+
+    auto colorEffectVisual = compositor.CreateSpriteVisual();
+    colorEffectVisual.Size({ 200, 200 });
+    colorEffectVisual.Brush(colorEffectBrush);
+    root.Children().InsertAtTop(colorEffectVisual);
+
+    // Gaussian Blur
+    auto blurEffect = winrt::GaussianBlurEffect();
+    blurEffect.BlurAmount(30.0f);
+    blurEffect.BorderMode(winrt::EffectBorderMode::Hard);
+    blurEffect.Source(winrt::CompositionEffectSourceParameter(L"Backdrop"));
+    auto blurEffectFactory = compositor.CreateEffectFactory(blurEffect);
+    auto blurEffectBrush = blurEffectFactory.CreateBrush();
+    blurEffectBrush.SetSourceParameter(L"Backdrop", compositor.CreateBackdropBrush());
+
+    auto blurEffectVisual = compositor.CreateSpriteVisual();
+    blurEffectVisual.Offset({ 100, 100, 0 });
+    blurEffectVisual.Size({ 200, 200 });
+    blurEffectVisual.Brush(blurEffectBrush);
+    root.Children().InsertAtTop(blurEffectVisual);
 
     // Message pump
     MSG msg = {};

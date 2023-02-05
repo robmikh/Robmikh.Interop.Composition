@@ -10,6 +10,7 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
             return inspectable.as<winrt::Windows::Foundation::IPropertyValue>();
         }
 
+
         template <typename T>
         inline T GetValueOfProperty(winrt::Windows::Foundation::IPropertyValue const& propertyValue)
         {
@@ -29,6 +30,30 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
                 return innerValue.as<T>();
             }
             return nullptr;
+        }
+
+        inline winrt::Windows::Foundation::IPropertyValue CreateProperty(uint32_t const& value)
+        {
+            auto inspectable = winrt::Windows::Foundation::PropertyValue::CreateUInt32({ value });
+            return inspectable.as<winrt::Windows::Foundation::IPropertyValue>();
+        }
+
+        template <>
+        inline uint32_t GetValueOfProperty(winrt::Windows::Foundation::IPropertyValue const& propertyValue)
+        {
+            return propertyValue.GetUInt32();
+        }
+
+        inline winrt::Windows::Foundation::IPropertyValue CreateProperty(float const& value)
+        {
+            auto inspectable = winrt::Windows::Foundation::PropertyValue::CreateSingle({ value });
+            return inspectable.as<winrt::Windows::Foundation::IPropertyValue>();
+        }
+
+        template <>
+        inline float GetValueOfProperty(winrt::Windows::Foundation::IPropertyValue const& propertyValue)
+        {
+            return propertyValue.GetSingle();
         }
 
         template<typename TBoxed, typename TPublic, typename Enable = void>
@@ -103,6 +128,23 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
                 return result;
             }
         };
+
+        // Enum values are boxed as unsigned integers.
+        template<typename TPublic>
+        struct PropertyTypeConverter<uint32_t, TPublic,
+            typename std::enable_if<std::is_enum<TPublic>::value>::type>
+        {
+            static winrt::Windows::Foundation::IPropertyValue Box(TPublic const& value)
+            {
+                return CreateProperty(static_cast<uint32_t>(value));
+            }
+
+            static TPublic Unbox(winrt::Windows::Foundation::IPropertyValue const& propertyValue)
+            {
+                auto value = GetValueOfProperty<uint32_t>(propertyValue);
+                return static_cast<TPublic>(value);
+            }
+        };
     }
 
     struct EffectBase : winrt::implements<EffectBase,
@@ -110,7 +152,7 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
         winrt::Windows::Graphics::Effects::IGraphicsEffectSource,
         ABI::Windows::Graphics::Effects::IGraphicsEffectD2D1Interop>
     {
-        using PropertyMappings = std::map<winrt::hstring, std::pair<D2D1_FLOOD_PROP, ABI::Windows::Graphics::Effects::GRAPHICS_EFFECT_PROPERTY_MAPPING>>;
+        using PropertyMappings = std::map<winrt::hstring, std::pair<int, ABI::Windows::Graphics::Effects::GRAPHICS_EFFECT_PROPERTY_MAPPING>>;
 
         EffectBase(size_t propertyCount, size_t sourceCount) : m_properties(propertyCount), m_sources(sourceCount)
         { }
