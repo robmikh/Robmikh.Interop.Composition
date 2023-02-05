@@ -1,0 +1,13 @@
+namespace Robmikh.Interop.Composition
+{
+	namespace Effects
+	{
+		runtimeclass ColorSourceEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
+		{
+			ColorSourceEffect();
+
+			Windows.UI.Color Color{ get; set; };
+			Windows.Foundation.Numerics.Vector4 ColorHdr{ get; set; };
+		}
+	}
+}
