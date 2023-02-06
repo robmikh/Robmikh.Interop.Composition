@@ -25,7 +25,15 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
         }
 
         float BlurAmount() { return GetBoxedProperty<float, float>(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION); }
-        void BlurAmount(float value) { SetBoxedProperty<float, float>(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, value); }
+        void BlurAmount(float value) 
+        { 
+            if (value < 0.0f || value > 250.0f)
+            {
+                throw winrt::hresult_invalid_argument();
+            }
+
+            SetBoxedProperty<float, float>(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, value); 
+        }
         winrt::Robmikh::Interop::Composition::Effects::EffectOptimization Optimization() { return GetBoxedProperty<uint32_t, EffectOptimization>(D2D1_GAUSSIANBLUR_PROP_OPTIMIZATION); }
         void Optimization(winrt::Robmikh::Interop::Composition::Effects::EffectOptimization const& value) { SetBoxedProperty<uint32_t, EffectOptimization>(D2D1_GAUSSIANBLUR_PROP_OPTIMIZATION, value); }
         winrt::Robmikh::Interop::Composition::Effects::EffectBorderMode BorderMode() { return GetBoxedProperty<uint32_t, EffectBorderMode>(D2D1_GAUSSIANBLUR_PROP_BORDER_MODE); }

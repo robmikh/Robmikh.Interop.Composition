@@ -32,5 +32,13 @@ namespace Robmikh.Interop.Composition
 			EffectBorderMode BorderMode { get; set; };
 			Windows.Graphics.Effects.IGraphicsEffectSource Source { get; set; };
 		}
+
+		runtimeclass SaturationEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
+		{
+			SaturationEffect();
+
+			Single Saturation { get; set; };
+			Windows.Graphics.Effects.IGraphicsEffectSource Source { get; set; };
+		}
 	}
 }

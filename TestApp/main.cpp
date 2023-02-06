@@ -60,6 +60,20 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     blurEffectVisual.Brush(blurEffectBrush);
     root.Children().InsertAtTop(blurEffectVisual);
 
+    // Saturation
+    auto saturationEffect = winrt::SaturationEffect();
+    saturationEffect.Saturation(0.3f);
+    saturationEffect.Source(colorEffect);
+    auto saturationEffectFactory = compositor.CreateEffectFactory(saturationEffect);
+    auto saturationEffectBrush = saturationEffectFactory.CreateBrush();
+
+    auto saturationEffectVisual = compositor.CreateSpriteVisual();
+    saturationEffectVisual.Offset({ 200, 0, 0 });
+    saturationEffectVisual.Size({ 200, 200 });
+    saturationEffectVisual.Brush(saturationEffectBrush);
+    root.Children().InsertAtBottom(saturationEffectVisual);
+
+
     // Message pump
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
