@@ -3,3 +3,17 @@ DISPATCHERQUEUE_THREAD_APARTMENTTYPE
 DISPATCHERQUEUE_THREAD_TYPE
 ICompositorDesktopInterop
 ICompositorInterop
+ID3D11Device
+IDXGIDevice
+ID3D11Texture2D
+D3D_DRIVER_TYPE
+D3D11CreateDevice
+D3D11_SDK_VERSION
+DXGI_ERROR_UNSUPPORTED
+CreateDirect3D11DeviceFromDXGIDevice
+CreateDirect3D11SurfaceFromDXGISurface
+IDirect3DDxgiInterfaceAccess
+HRESULT
+IDXGISurface
+IMemoryBufferByteAccess
+ICompositionDrawingSurfaceInterop

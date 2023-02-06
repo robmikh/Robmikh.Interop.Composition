@@ -13,6 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\Assets\default-before.jpg" Link="Assets\default-before.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Assets\NoiseAsset_256X256.png" Link="Assets\NoiseAsset_256X256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.188-beta">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,6 +31,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Robmikh.Interop.Composition\Robmikh.Interop.Composition.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\" />
   </ItemGroup>
 
 </Project>
