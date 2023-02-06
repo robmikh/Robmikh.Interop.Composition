@@ -159,6 +159,7 @@
     <ClInclude Include="EffectBase.h" />
     <ClInclude Include="Effects.CompositeEffect.h" />
     <ClInclude Include="Effects.GaussianBlurEffect.h" />
+    <ClInclude Include="Effects.OpacityEffect.h" />
     <ClInclude Include="Effects.SaturationEffect.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
@@ -167,6 +168,7 @@
     <ClCompile Include="Effects.ColorSourceEffect.cpp" />
     <ClCompile Include="Effects.CompositeEffect.cpp" />
     <ClCompile Include="Effects.GaussianBlurEffect.cpp" />
+    <ClCompile Include="Effects.OpacityEffect.cpp" />
     <ClCompile Include="Effects.SaturationEffect.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

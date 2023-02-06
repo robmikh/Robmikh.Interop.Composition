@@ -104,5 +104,13 @@ namespace Robmikh.Interop.Composition
 			CompositeMode Mode { get; set; };
 			Windows.Foundation.Collections.IVector<Windows.Graphics.Effects.IGraphicsEffectSource> Sources { get; };
 		}
+
+		runtimeclass OpacityEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
+		{
+			OpacityEffect();
+
+			Single Opacity { get; set; };
+			Windows.Graphics.Effects.IGraphicsEffectSource Source { get; set; };
+		}
 	}
 }

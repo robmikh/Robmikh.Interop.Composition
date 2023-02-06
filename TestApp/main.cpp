@@ -147,6 +147,19 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
             co_await LoadTestImagesAsync(compositeEffectVisual, input1Surface, L"default-before.jpg", input2Surface, L"3-composite(2of2).png", d3dDevice);
         });
 
+    // Opacity
+    auto opacityEffect = winrt::OpacityEffect();
+    opacityEffect.Opacity(0.5f);
+    opacityEffect.Source(colorEffect);
+    auto opacityEffectFactory = compositor.CreateEffectFactory(opacityEffect);
+    auto opacityEffectBrush = opacityEffectFactory.CreateBrush();
+
+    auto opacityEffectVisual = compositor.CreateSpriteVisual();
+    opacityEffectVisual.Offset({ 400, 0, 0 });
+    opacityEffectVisual.Size({ 200, 200 });
+    opacityEffectVisual.Brush(opacityEffectBrush);
+    root.Children().InsertAtBottom(opacityEffectVisual);
+
     // Message pump
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -165,6 +178,8 @@ winrt::IAsyncAction LoadTestImagesAsync(
     std::wstring surface2FileName,
     winrt::com_ptr<ID3D11Device> d3dDevice)
 {
+    winrt::apartment_context context;
+
     auto exePath = std::filesystem::path(GetModulePath(nullptr));
     auto folderPath = exePath.parent_path();
     auto folder = co_await winrt::Windows::Storage::StorageFolder::GetFolderFromPathAsync(folderPath.wstring());
@@ -174,6 +189,7 @@ winrt::IAsyncAction LoadTestImagesAsync(
 
     auto surface1Texture = co_await LoadTextureFromFileAsync(surface1ImageFile, d3dDevice);
     auto surface2Texture = co_await LoadTextureFromFileAsync(surface2ImageFile, d3dDevice);
+    co_await context;
 
     winrt::com_ptr<ID3D11DeviceContext> d3dContext;
     d3dDevice->GetImmediateContext(d3dContext.put());
@@ -187,7 +203,7 @@ winrt::IAsyncAction LoadTestImagesAsync(
 std::wstring GetModulePath(HMODULE module)
 {
     std::wstring path(MAX_PATH, L'\0');
-    DWORD size = path.size();
+    DWORD size = static_cast<DWORD>(path.size());
     auto newSize = GetModuleFileNameW(module, path.data(), size);
     path.resize(newSize);
     return path;
@@ -215,12 +231,9 @@ void CopyTexutreIntoCompositionSurface(
     sourceTexture->GetDesc(&desc);
     winrt::check_hresult(surfaceInterop->Resize({ static_cast<LONG>(desc.Width), static_cast<LONG>(desc.Height) }));
 
-    // Here we get the underlying D3D texture for our surface. Because composition surfaces come from an
-    // atlas, we need to copy our data at an offset. 
     POINT offset = {};
     winrt::com_ptr<ID3D11Texture2D> surfaceTexture;
     winrt::check_hresult(surfaceInterop->BeginDraw(nullptr, winrt::guid_of<ID3D11Texture2D>(), surfaceTexture.put_void(), &offset));
-    // Make sure that you call EndDraw when you're finished.
     auto scopeExit = wil::scope_exit([surfaceInterop]()
         {
             winrt::check_hresult(surfaceInterop->EndDraw());
@@ -228,11 +241,11 @@ void CopyTexutreIntoCompositionSurface(
 
     d3dContext->CopySubresourceRegion(
         surfaceTexture.get(),
-        0, // We only have one subresource
+        0,
         offset.x,
         offset.y,
-        0, // z
+        0,
         sourceTexture.get(),
-        0, // We only have one subresource
-        nullptr); // Copy the entire thing
+        0,
+        nullptr);
 }
