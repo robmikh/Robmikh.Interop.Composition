@@ -45,6 +45,23 @@ namespace Robmikh.Interop.Composition
 			Division = 25,
 		};
 
+		enum CompositeMode
+		{
+			SourceOver = (int)0,
+			DestinationOver = (int)1,
+			SourceIn = (int)2,
+			DestinationIn = (int)3,
+			SourceOut = (int)4,
+			DestinationOut = (int)5,
+			SourceAtop = (int)6,
+			DestinationAtop = (int)7,
+			Xor = (int)8,
+			Add = (int)9,
+			Copy = (int)10,
+			BoundedCopy = (int)11,
+			MaskInvert = (int)12,
+		};
+
 		runtimeclass ColorSourceEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
 		{
 			ColorSourceEffect();
@@ -78,6 +95,14 @@ namespace Robmikh.Interop.Composition
 			BlendEffectMode Mode { get; set; };
 			Windows.Graphics.Effects.IGraphicsEffectSource Background { get; set; };
 			Windows.Graphics.Effects.IGraphicsEffectSource Foreground { get; set; };
+		}
+
+		runtimeclass CompositeEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
+		{
+			CompositeEffect();
+
+			CompositeMode Mode { get; set; };
+			Windows.Foundation.Collections.IVector<Windows.Graphics.Effects.IGraphicsEffectSource> Sources { get; };
 		}
 	}
 }

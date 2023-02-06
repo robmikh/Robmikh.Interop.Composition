@@ -30,8 +30,8 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
 
             SetBoxedProperty<float, float>(D2D1_SATURATION_PROP_SATURATION, value); 
         }
-        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Source() { return m_sources[0]; }
-        void Source(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources[0] = value; }
+        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Source() { return m_sources.GetAt(0); }
+        void Source(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources.SetAt(0, value); }
     };
 }
 namespace winrt::Robmikh::Interop::Composition::Effects::factory_implementation

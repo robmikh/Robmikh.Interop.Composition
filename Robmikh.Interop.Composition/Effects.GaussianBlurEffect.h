@@ -38,8 +38,8 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
         void Optimization(winrt::Robmikh::Interop::Composition::Effects::EffectOptimization const& value) { SetBoxedProperty<uint32_t, EffectOptimization>(D2D1_GAUSSIANBLUR_PROP_OPTIMIZATION, value); }
         winrt::Robmikh::Interop::Composition::Effects::EffectBorderMode BorderMode() { return GetBoxedProperty<uint32_t, EffectBorderMode>(D2D1_GAUSSIANBLUR_PROP_BORDER_MODE); }
         void BorderMode(winrt::Robmikh::Interop::Composition::Effects::EffectBorderMode const& value) { SetBoxedProperty<uint32_t, EffectBorderMode>(D2D1_GAUSSIANBLUR_PROP_BORDER_MODE, value); }
-        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Source() { return m_sources[0]; }
-        void Source(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources[0] = value; }
+        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Source() { return m_sources.GetAt(0); }
+        void Source(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources.SetAt(0, value); }
     };
 }
 namespace winrt::Robmikh::Interop::Composition::Effects::factory_implementation

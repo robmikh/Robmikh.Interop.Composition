@@ -154,7 +154,7 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
     {
         using PropertyMappings = std::map<winrt::hstring, std::pair<int, ABI::Windows::Graphics::Effects::GRAPHICS_EFFECT_PROPERTY_MAPPING>>;
 
-        EffectBase(size_t propertyCount, size_t sourceCount) : m_properties(propertyCount), m_sources(sourceCount)
+        EffectBase(size_t propertyCount, size_t sourceCount) : m_properties(propertyCount), m_sources(winrt::single_threaded_vector(std::vector<winrt::Windows::Graphics::Effects::IGraphicsEffectSource>(sourceCount)))
         { }
 
         // IGraphicsEffect
@@ -215,7 +215,7 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
         {
             try
             {
-                auto sourceValue = m_sources[index];
+                auto sourceValue = m_sources.GetAt(index);
                 auto abiValue = sourceValue.as<ABI::Windows::Graphics::Effects::IGraphicsEffectSource>();
                 *source = abiValue.detach();
             }
@@ -228,7 +228,7 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
 
         IFACEMETHODIMP GetSourceCount(_Out_ UINT* count)
         {
-            *count = static_cast<UINT>(m_sources.size());
+            *count = m_sources.Size();
             return S_OK;
         }
 
@@ -255,6 +255,6 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
         winrt::hstring m_name;
         // TODO: I shouldn't be using the impl namespace from winrt...
         std::vector<winrt::impl::com_ref<winrt::Windows::Foundation::IPropertyValue>> m_properties;
-        std::vector<winrt::impl::com_ref<winrt::Windows::Graphics::Effects::IGraphicsEffectSource>> m_sources;
+        winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Graphics::Effects::IGraphicsEffectSource> m_sources;
     };
 }

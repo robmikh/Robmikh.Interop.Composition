@@ -143,6 +143,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\Assets\3-composite(2of2).png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="..\Assets\4-arthimetic-composite2.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>

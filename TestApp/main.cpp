@@ -19,10 +19,12 @@ namespace util
     using namespace robmikh::common::desktop;
 }
 
-winrt::IAsyncAction LoadBlendEffectImagesAsync(
+winrt::IAsyncAction LoadTestImagesAsync(
     winrt::Visual visual,
-    winrt::CompositionDrawingSurface backgroundSurface,
-    winrt::CompositionDrawingSurface foregroundSurface,
+    winrt::CompositionDrawingSurface surface1,
+    std::wstring surface1FileName,
+    winrt::CompositionDrawingSurface surface2,
+    std::wstring surface2FileName,
     winrt::com_ptr<ID3D11Device> d3dDevice);
 std::wstring GetModulePath(HMODULE module);
 std::future<winrt::com_ptr<ID3D11Texture2D>> LoadTextureFromFileAsync(
@@ -117,9 +119,33 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     // Load the test images
     dispatcherQueue.TryEnqueue([blendEffectVisual, backgroundSurface, foregroundSurface, d3dDevice]() -> winrt::fire_and_forget
         {
-            co_await LoadBlendEffectImagesAsync(blendEffectVisual, backgroundSurface, foregroundSurface, d3dDevice);
+            co_await LoadTestImagesAsync(blendEffectVisual, backgroundSurface, L"default-before.jpg", foregroundSurface, L"4-arthimetic-composite2.jpg", d3dDevice);
         });
 
+    // Composite
+    auto compositeEffect = winrt::CompositeEffect();
+    compositeEffect.Mode(winrt::CompositeMode::SourceOver);
+    auto compositeSources = compositeEffect.Sources();
+    compositeSources.Append(winrt::CompositionEffectSourceParameter(L"Input1"));
+    compositeSources.Append(winrt::CompositionEffectSourceParameter(L"Input2"));
+    auto compositeEffectFactory = compositor.CreateEffectFactory(compositeEffect);
+    auto compositeEffectBrush = compositeEffectFactory.CreateBrush();
+    auto input1Surface = compGraphics.CreateDrawingSurface2({ 1, 1 }, winrt::DirectXPixelFormat::B8G8R8A8UIntNormalized, winrt::DirectXAlphaMode::Premultiplied);
+    auto input2Surface = compGraphics.CreateDrawingSurface2({ 1, 1 }, winrt::DirectXPixelFormat::B8G8R8A8UIntNormalized, winrt::DirectXAlphaMode::Premultiplied);
+    compositeEffectBrush.SetSourceParameter(L"Input1", compositor.CreateSurfaceBrush(input1Surface));
+    compositeEffectBrush.SetSourceParameter(L"Input2", compositor.CreateSurfaceBrush(input2Surface));
+
+    auto compositeEffectVisual = compositor.CreateSpriteVisual();
+    compositeEffectVisual.Offset({ 600, 400, 0 });
+    compositeEffectVisual.Size({ 200, 200 });
+    compositeEffectVisual.Brush(compositeEffectBrush);
+    root.Children().InsertAtBottom(compositeEffectVisual);
+
+    // Load the test images
+    dispatcherQueue.TryEnqueue([compositeEffectVisual, input1Surface, input2Surface, d3dDevice]() -> winrt::fire_and_forget
+        {
+            co_await LoadTestImagesAsync(compositeEffectVisual, input1Surface, L"default-before.jpg", input2Surface, L"3-composite(2of2).png", d3dDevice);
+        });
 
     // Message pump
     MSG msg = {};
@@ -131,28 +157,30 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     return util::ShutdownDispatcherQueueControllerAndWait(controller, static_cast<int>(msg.wParam));
 }
 
-winrt::IAsyncAction LoadBlendEffectImagesAsync(
+winrt::IAsyncAction LoadTestImagesAsync(
     winrt::Visual visual,
-    winrt::CompositionDrawingSurface backgroundSurface,
-    winrt::CompositionDrawingSurface foregroundSurface,
+    winrt::CompositionDrawingSurface surface1,
+    std::wstring surface1FileName,
+    winrt::CompositionDrawingSurface surface2,
+    std::wstring surface2FileName,
     winrt::com_ptr<ID3D11Device> d3dDevice)
 {
     auto exePath = std::filesystem::path(GetModulePath(nullptr));
     auto folderPath = exePath.parent_path();
     auto folder = co_await winrt::Windows::Storage::StorageFolder::GetFolderFromPathAsync(folderPath.wstring());
 
-    auto backgroundImageFile = co_await folder.GetFileAsync(L"default-before.jpg");
-    auto foregroundImageFile = co_await folder.GetFileAsync(L"4-arthimetic-composite2.jpg");
+    auto surface1ImageFile = co_await folder.GetFileAsync(surface1FileName);
+    auto surface2ImageFile = co_await folder.GetFileAsync(surface2FileName);
 
-    auto backgroundTexture = co_await LoadTextureFromFileAsync(backgroundImageFile, d3dDevice);
-    auto foregroundTexture = co_await LoadTextureFromFileAsync(foregroundImageFile, d3dDevice);
+    auto surface1Texture = co_await LoadTextureFromFileAsync(surface1ImageFile, d3dDevice);
+    auto surface2Texture = co_await LoadTextureFromFileAsync(surface2ImageFile, d3dDevice);
 
     winrt::com_ptr<ID3D11DeviceContext> d3dContext;
     d3dDevice->GetImmediateContext(d3dContext.put());
-    CopyTexutreIntoCompositionSurface(backgroundSurface, backgroundTexture, d3dContext);
-    CopyTexutreIntoCompositionSurface(foregroundSurface, foregroundTexture, d3dContext);
+    CopyTexutreIntoCompositionSurface(surface1, surface1Texture, d3dContext);
+    CopyTexutreIntoCompositionSurface(surface2, surface2Texture, d3dContext);
 
-    auto size = backgroundSurface.Size();
+    auto size = surface1.Size();
     visual.Size({ size.Width, size.Height });
 }
 

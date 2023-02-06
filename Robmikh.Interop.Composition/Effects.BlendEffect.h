@@ -22,10 +22,10 @@ namespace winrt::Robmikh::Interop::Composition::Effects::implementation
 
         winrt::Robmikh::Interop::Composition::Effects::BlendEffectMode Mode() { return GetBoxedProperty<uint32_t, BlendEffectMode>(D2D1_BLEND_PROP_MODE); }
         void Mode(winrt::Robmikh::Interop::Composition::Effects::BlendEffectMode const& value) { SetBoxedProperty<uint32_t, BlendEffectMode>(D2D1_BLEND_PROP_MODE, value); }
-        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Background() { return m_sources[0]; }
-        void Background(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources[0] = value; }
-        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Foreground() { return m_sources[1]; }
-        void Foreground(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources[1] = value; }
+        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Background() { return m_sources.GetAt(0); }
+        void Background(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources.SetAt(0, value); }
+        winrt::Windows::Graphics::Effects::IGraphicsEffectSource Foreground() { return m_sources.GetAt(1); }
+        void Foreground(winrt::Windows::Graphics::Effects::IGraphicsEffectSource const& value) { m_sources.SetAt(1, value); }
     };
 }
 namespace winrt::Robmikh::Interop::Composition::Effects::factory_implementation
