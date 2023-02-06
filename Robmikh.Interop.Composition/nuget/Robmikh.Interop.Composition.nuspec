@@ -11,17 +11,23 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Robmikh.Interop.Composition is a collection of interop bits for Windows.UI.Composition.</description>
     <releaseNotes>Release notes:
+Version 0.0.2-prerelease:
+* Add nuget README
+
 Version 0.0.1-prerelease:
 * Add a subset of the Effect descriptions
 
 </releaseNotes>
     <copyright>Copyright 2023</copyright>
+    <readme>docs\readme.md</readme>
     <dependencies>
       <group targetFramework="UAP10.0">
       </group>
     </dependencies>
   </metadata>
   <files>
+      <file target="docs\readme.md" src="nugetreadme.md"/>
+
       <file target="build\native\Robmikh.Interop.Composition.targets" src="Robmikh.Interop.Composition.native.targets" />
       <file target="build\native\Robmikh.Interop.Composition.props" src="Robmikh.Interop.Composition.props" />
 
