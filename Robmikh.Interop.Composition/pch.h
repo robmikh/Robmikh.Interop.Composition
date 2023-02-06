@@ -13,10 +13,12 @@
 // WinRT Interop
 #include <windows.graphics.effects.interop.h>
 
-// D2D
+// DirectX
 #include <d2d1_3.h>
 
 // STL
+#include <vector>
+#include <string>
 #include <type_traits>
 
 // Helpers

@@ -13,4 +13,17 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="MainWindow.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{f16a696f-b36e-4632-8cee-dcbcd77db07b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Assets\default-before.jpg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="..\Assets\4-arthimetic-composite2.jpg">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

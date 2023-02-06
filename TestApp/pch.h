@@ -18,6 +18,8 @@
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
+#include <winrt/Windows.Storage.h>
+#include <winrt/Windows.Storage.Streams.h>
 
 #include <winrt/Robmikh.Interop.Composition.Effects.h>
 
@@ -37,6 +39,7 @@
 #include <memory>
 #include <algorithm>
 #include <mutex>
+#include <filesystem>
 
 // robmikh.common
 #include <robmikh.common/composition.interop.h>
@@ -49,3 +52,4 @@
 #include <robmikh.common/hwnd.interop.h>
 #include <robmikh.common/capture.desktop.interop.h>
 #include <robmikh.common/DesktopWindow.h>
+#include <robmikh.common/imaging.h>

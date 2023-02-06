@@ -5,6 +5,9 @@ namespace winrt
 {
     using namespace Windows::Foundation;
     using namespace Windows::Foundation::Numerics;
+    using namespace Windows::Graphics::DirectX;
+    using namespace Windows::Storage;
+    using namespace Windows::Storage::Streams;
     using namespace Windows::UI;
     using namespace Windows::UI::Composition;
     using namespace Robmikh::Interop::Composition::Effects;
@@ -12,8 +15,23 @@ namespace winrt
 
 namespace util
 {
+    using namespace robmikh::common::uwp;
     using namespace robmikh::common::desktop;
 }
+
+winrt::IAsyncAction LoadBlendEffectImagesAsync(
+    winrt::Visual visual,
+    winrt::CompositionDrawingSurface backgroundSurface,
+    winrt::CompositionDrawingSurface foregroundSurface,
+    winrt::com_ptr<ID3D11Device> d3dDevice);
+std::wstring GetModulePath(HMODULE module);
+std::future<winrt::com_ptr<ID3D11Texture2D>> LoadTextureFromFileAsync(
+    winrt::StorageFile const& file,
+    winrt::com_ptr<ID3D11Device> d3dDevice);
+void CopyTexutreIntoCompositionSurface(
+    winrt::CompositionDrawingSurface const& surface,
+    winrt::com_ptr<ID3D11Texture2D> const& sourceTexture,
+    winrt::com_ptr<ID3D11DeviceContext> const& d3dContext);
 
 int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
 {
@@ -22,10 +40,15 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
 
     // Create the DispatcherQueue that the compositor needs to run
     auto controller = util::CreateDispatcherQueueControllerForCurrentThread();
+    auto dispatcherQueue = controller.DispatcherQueue();
+
+    // Init D3D
+    auto d3dDevice = util::CreateD3DDevice();
 
     // Create our window and visual tree
     auto window = MainWindow(L"TestApp", 800, 600);
     auto compositor = winrt::Compositor();
+    auto compGraphics = util::CreateCompositionGraphicsDevice(compositor, d3dDevice.get());
     auto target = window.CreateWindowTarget(compositor);
     auto root = compositor.CreateSpriteVisual();
     root.RelativeSizeAdjustment({ 1.0f, 1.0f });
@@ -74,7 +97,28 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     root.Children().InsertAtBottom(saturationEffectVisual);
 
     // Blend
-    
+    auto blendEffect = winrt::BlendEffect();
+    blendEffect.Mode(winrt::BlendEffectMode::Exclusion);
+    blendEffect.Background(winrt::CompositionEffectSourceParameter(L"Background"));
+    blendEffect.Foreground(winrt::CompositionEffectSourceParameter(L"Foreground"));
+    auto blendEffectFactory = compositor.CreateEffectFactory(blendEffect);
+    auto blendEffectBrush = blendEffectFactory.CreateBrush();
+    auto backgroundSurface = compGraphics.CreateDrawingSurface2({ 1, 1 }, winrt::DirectXPixelFormat::B8G8R8A8UIntNormalized, winrt::DirectXAlphaMode::Premultiplied);
+    auto foregroundSurface = compGraphics.CreateDrawingSurface2({ 1, 1 }, winrt::DirectXPixelFormat::B8G8R8A8UIntNormalized, winrt::DirectXAlphaMode::Premultiplied);
+    blendEffectBrush.SetSourceParameter(L"Background", compositor.CreateSurfaceBrush(backgroundSurface));
+    blendEffectBrush.SetSourceParameter(L"Foreground", compositor.CreateSurfaceBrush(foregroundSurface));
+
+    auto blendEffectVisual = compositor.CreateSpriteVisual();
+    blendEffectVisual.Offset({ 0, 400, 0 });
+    blendEffectVisual.Size({ 200, 200 });
+    blendEffectVisual.Brush(blendEffectBrush);
+    root.Children().InsertAtBottom(blendEffectVisual);
+
+    // Load the test images
+    dispatcherQueue.TryEnqueue([blendEffectVisual, backgroundSurface, foregroundSurface, d3dDevice]() -> winrt::fire_and_forget
+        {
+            co_await LoadBlendEffectImagesAsync(blendEffectVisual, backgroundSurface, foregroundSurface, d3dDevice);
+        });
 
 
     // Message pump
@@ -85,4 +129,82 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
         DispatchMessageW(&msg);
     }
     return util::ShutdownDispatcherQueueControllerAndWait(controller, static_cast<int>(msg.wParam));
+}
+
+winrt::IAsyncAction LoadBlendEffectImagesAsync(
+    winrt::Visual visual,
+    winrt::CompositionDrawingSurface backgroundSurface,
+    winrt::CompositionDrawingSurface foregroundSurface,
+    winrt::com_ptr<ID3D11Device> d3dDevice)
+{
+    auto exePath = std::filesystem::path(GetModulePath(nullptr));
+    auto folderPath = exePath.parent_path();
+    auto folder = co_await winrt::Windows::Storage::StorageFolder::GetFolderFromPathAsync(folderPath.wstring());
+
+    auto backgroundImageFile = co_await folder.GetFileAsync(L"default-before.jpg");
+    auto foregroundImageFile = co_await folder.GetFileAsync(L"4-arthimetic-composite2.jpg");
+
+    auto backgroundTexture = co_await LoadTextureFromFileAsync(backgroundImageFile, d3dDevice);
+    auto foregroundTexture = co_await LoadTextureFromFileAsync(foregroundImageFile, d3dDevice);
+
+    winrt::com_ptr<ID3D11DeviceContext> d3dContext;
+    d3dDevice->GetImmediateContext(d3dContext.put());
+    CopyTexutreIntoCompositionSurface(backgroundSurface, backgroundTexture, d3dContext);
+    CopyTexutreIntoCompositionSurface(foregroundSurface, foregroundTexture, d3dContext);
+
+    auto size = backgroundSurface.Size();
+    visual.Size({ size.Width, size.Height });
+}
+
+std::wstring GetModulePath(HMODULE module)
+{
+    std::wstring path(MAX_PATH, L'\0');
+    DWORD size = path.size();
+    auto newSize = GetModuleFileNameW(module, path.data(), size);
+    path.resize(newSize);
+    return path;
+}
+
+std::future<winrt::com_ptr<ID3D11Texture2D>> LoadTextureFromFileAsync(
+    winrt::StorageFile const& file,
+    winrt::com_ptr<ID3D11Device> d3dDevice)
+{
+    auto stream = co_await file.OpenReadAsync();
+    auto texture = co_await util::LoadTextureFromStreamAsync(stream, d3dDevice);
+    co_return texture;
+}
+
+void CopyTexutreIntoCompositionSurface(
+    winrt::CompositionDrawingSurface const& surface,
+    winrt::com_ptr<ID3D11Texture2D> const& sourceTexture,
+    winrt::com_ptr<ID3D11DeviceContext> const& d3dContext)
+{
+    // Since we're going to interop with D3D, we'll need the inteorp COM interface from the surface.
+    auto surfaceInterop = surface.as<ABI::Windows::UI::Composition::ICompositionDrawingSurfaceInterop>();
+
+    // Make sure our surface is the correct size for our image.
+    D3D11_TEXTURE2D_DESC desc = {};
+    sourceTexture->GetDesc(&desc);
+    winrt::check_hresult(surfaceInterop->Resize({ static_cast<LONG>(desc.Width), static_cast<LONG>(desc.Height) }));
+
+    // Here we get the underlying D3D texture for our surface. Because composition surfaces come from an
+    // atlas, we need to copy our data at an offset. 
+    POINT offset = {};
+    winrt::com_ptr<ID3D11Texture2D> surfaceTexture;
+    winrt::check_hresult(surfaceInterop->BeginDraw(nullptr, winrt::guid_of<ID3D11Texture2D>(), surfaceTexture.put_void(), &offset));
+    // Make sure that you call EndDraw when you're finished.
+    auto scopeExit = wil::scope_exit([surfaceInterop]()
+        {
+            winrt::check_hresult(surfaceInterop->EndDraw());
+        });
+
+    d3dContext->CopySubresourceRegion(
+        surfaceTexture.get(),
+        0, // We only have one subresource
+        offset.x,
+        offset.y,
+        0, // z
+        sourceTexture.get(),
+        0, // We only have one subresource
+        nullptr); // Copy the entire thing
 }
