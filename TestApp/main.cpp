@@ -160,6 +160,25 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     opacityEffectVisual.Brush(opacityEffectBrush);
     root.Children().InsertAtBottom(opacityEffectVisual);
 
+    // Border
+    auto borderEffect = winrt::BorderEffect();
+    borderEffect.ExtendX(winrt::EdgeBehavior::Wrap);
+    borderEffect.ExtendY(winrt::EdgeBehavior::Clamp);
+    borderEffect.Source(winrt::CompositionEffectSourceParameter(L"Source"));
+    auto borderEffectFactory = compositor.CreateEffectFactory(borderEffect);
+    auto borderEffectBrush = borderEffectFactory.CreateBrush();
+    auto borderEffectSourceBrush = compositor.CreateSurfaceBrush(backgroundSurface);
+    borderEffectSourceBrush.HorizontalAlignmentRatio(0.0f);
+    borderEffectSourceBrush.VerticalAlignmentRatio(0.0f);
+    borderEffectSourceBrush.Stretch(winrt::CompositionStretch::None);
+    borderEffectBrush.SetSourceParameter(L"Source", borderEffectSourceBrush);
+
+    auto borderEffectVisual = compositor.CreateSpriteVisual();
+    borderEffectVisual.Offset({ 1200, 0, 0 });
+    borderEffectVisual.Size({ 800, 800 });
+    borderEffectVisual.Brush(borderEffectBrush);
+    root.Children().InsertAtBottom(borderEffectVisual);
+
     // Message pump
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))

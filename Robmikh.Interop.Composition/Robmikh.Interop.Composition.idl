@@ -62,6 +62,13 @@ namespace Robmikh.Interop.Composition
 			MaskInvert = (int)12,
 		};
 
+		enum EdgeBehavior
+		{
+			Clamp = (int)0,
+			Wrap = (int)1,
+			Mirror = (int)2,
+		};
+
 		runtimeclass ColorSourceEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
 		{
 			ColorSourceEffect();
@@ -110,6 +117,15 @@ namespace Robmikh.Interop.Composition
 			OpacityEffect();
 
 			Single Opacity { get; set; };
+			Windows.Graphics.Effects.IGraphicsEffectSource Source { get; set; };
+		}
+
+		runtimeclass BorderEffect : Windows.Graphics.Effects.IGraphicsEffect, Windows.Graphics.Effects.IGraphicsEffectSource
+		{
+			BorderEffect();
+
+			EdgeBehavior ExtendX { get; set; };
+			EdgeBehavior ExtendY { get; set; };
 			Windows.Graphics.Effects.IGraphicsEffectSource Source { get; set; };
 		}
 	}
