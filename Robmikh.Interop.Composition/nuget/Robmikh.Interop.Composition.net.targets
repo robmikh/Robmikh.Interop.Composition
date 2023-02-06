@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <robmikhInteropComposition-Platform Condition="$(RuntimeIdentifier.EndsWith('-x64'))">x64</robmikhInteropComposition-Platform>
+    <robmikhInteropComposition-Platform Condition="$(RuntimeIdentifier.EndsWith('-x86'))">x86</robmikhInteropComposition-Platform>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(robmikhInteropComposition-Platform)' == ''">
+    <robmikhInteropComposition-Platform Condition="'$(Platform)' == 'Win32'">x86</robmikhInteropComposition-Platform>
+    <robmikhInteropComposition-Platform Condition="'$(Platform)' != 'Win32'">$(Platform)</robmikhInteropComposition-Platform>
+    <robmikhInteropComposition-Platform Condition="'$(Platform)' == 'AnyCPU'"></robmikhInteropComposition-Platform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Robmikh.Interop.Composition">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\uap10.0\Robmikh.Interop.Composition.winmd</HintPath>
+      <Implementation>Robmikh.Interop.Composition.dll</Implementation>
+    </Reference>
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\win10-$(robmikhInteropComposition-Platform)\native\Robmikh.Interop.Composition.dll" Condition="'$(robmikhInteropComposition-Platform)' != ''" />
+  </ItemGroup>
+
+  <Target Name="PlatformCheck" BeforeTargets="InjectReference"
+    Condition=" ( ('$(robmikhInteropComposition-Platform)' != 'x86') AND ('$(robmikhInteropComposition-Platform)' != 'ARM') AND ('$(robmikhInteropComposition-Platform)' != 'x64') AND ('$(robmikhInteropComposition-Platform)' != 'ARM64') )">
+    <Error  Text="$(MSBuildThisFileName) does not work correctly on '$(Platform)' 
+                     platform. You need to specify platform (x86, x64, ARM, or ARM64)." />
+  </Target>
+
+</Project>

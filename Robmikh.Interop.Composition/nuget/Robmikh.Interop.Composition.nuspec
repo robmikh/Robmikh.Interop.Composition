@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<package >
+  <metadata minClientVersion="5.3">
+    <id>Robmikh.Interop.Composition</id>
+    <version>0.0.0-SpecifyVersionOnCommandline</version>
+    <title>Robmikh.Interop.Composition</title>
+    <authors>Robert Mikhayelyan</authors>
+    <owners>Robert Mikhayelyan</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/robmikh/Robmikh.Interop.Composition</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Robmikh.Interop.Composition is a collection of interop bits for Windows.UI.Composition.</description>
+    <releaseNotes>Release notes:
+Version 0.0.1-prerelease:
+* Add a subset of the Effect descriptions
+
+</releaseNotes>
+    <copyright>Copyright 2023</copyright>
+    <dependencies>
+      <group targetFramework="UAP10.0">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+      <file target="build\native\Robmikh.Interop.Composition.targets" src="Robmikh.Interop.Composition.native.targets" />
+      <file target="build\native\Robmikh.Interop.Composition.props" src="Robmikh.Interop.Composition.props" />
+
+      <file target="build\netcoreapp3.0\Robmikh.Interop.Composition.targets"  src="Robmikh.Interop.Composition.net.targets" />
+      <file target="build\net45\Robmikh.Interop.Composition.targets"          src="Robmikh.Interop.Composition.net.targets" />
+
+      <file target="lib\uap10.0" src="..\..\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.winmd" />
+      <!-- <file target="lib\uap10.0\Robmikh.Interop.Composition.xml" src="..\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.xml" /> -->
+
+      <file target="runtimes\win10-arm\native\Robmikh.Interop.Composition.dll" src="..\..\ARM\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.dll" />
+      <file target="runtimes\win10-arm\native" src="..\..\ARM\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pri" />
+      <file target="runtimes\win10-arm\native\Robmikh.Interop.Composition.pdb" src="..\..\ARM\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pdb" />
+
+      <file target="runtimes\win10-arm64\native\Robmikh.Interop.Composition.dll" src="..\..\ARM64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.dll" />
+      <file target="runtimes\win10-arm64\native" src="..\..\ARM64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pri" />
+      <file target="runtimes\win10-arm64\native\Robmikh.Interop.Composition.pdb" src="..\..\ARM64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pdb" />
+
+      <file target="runtimes\win10-x86\native\Robmikh.Interop.Composition.dll" src="..\..\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.dll" />
+      <file target="runtimes\win10-x86\native" src="..\..\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pri" />
+      <file target="runtimes\win10-x86\native\Robmikh.Interop.Composition.pdb" src="..\..\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pdb" />
+
+      <file target="runtimes\win10-x64\native\Robmikh.Interop.Composition.dll" src="..\..\x64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.dll" />
+      <file target="runtimes\win10-x64\native" src="..\..\x64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pri" />
+      <file target="runtimes\win10-x64\native\Robmikh.Interop.Composition.pdb" src="..\..\x64\Release\Robmikh.Interop.Composition\Robmikh.Interop.Composition.pdb" />
+  </files>
+</package>

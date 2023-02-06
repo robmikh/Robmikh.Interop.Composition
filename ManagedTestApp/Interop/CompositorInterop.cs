@@ -4,9 +4,9 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.WinRT.Composition;
 using WinRT;
 
-namespace ManagedTestApp
+namespace ManagedTestApp.Interop
 {
-    static class CompositionInterop
+    static class CompositorInterop
     {
         public static DesktopWindowTarget CreateTargetForWindow(this Compositor compositor, HWND window, bool topMost)
         {
