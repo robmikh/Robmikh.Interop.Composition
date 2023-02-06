@@ -73,6 +73,9 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, PSTR, int)
     saturationEffectVisual.Brush(saturationEffectBrush);
     root.Children().InsertAtBottom(saturationEffectVisual);
 
+    // Blend
+    
+
 
     // Message pump
     MSG msg = {};

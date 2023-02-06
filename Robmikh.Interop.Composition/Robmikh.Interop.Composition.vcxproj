@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Effects.BlendEffect.h" />
     <ClInclude Include="Effects.ColorSourceEffect.h" />
     <ClInclude Include="EffectBase.h" />
     <ClInclude Include="Effects.GaussianBlurEffect.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Effects.BlendEffect.cpp" />
     <ClCompile Include="Effects.ColorSourceEffect.cpp" />
     <ClCompile Include="Effects.GaussianBlurEffect.cpp" />
     <ClCompile Include="Effects.SaturationEffect.cpp" />
