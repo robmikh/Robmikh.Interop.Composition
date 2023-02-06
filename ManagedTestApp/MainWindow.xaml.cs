@@ -127,13 +127,60 @@ namespace ManagedTestApp
             acrylicEffectBrush.SetSourceParameter("Noise", _compositor.CreateSurfaceBrush(_noiseSurface));
             LoadAssetSurface(_noiseSurface, "NoiseAsset_256X256.png");
 
+            var backdropRoot = _compositor.CreateContainerVisual();
+            backdropRoot.AnchorPoint = new Vector2(0.5f, 0.5f);
+            backdropRoot.Size = new Vector2(-400, -200);
+            backdropRoot.RelativeSizeAdjustment = Vector2.One;
+            backdropRoot.RelativeOffsetAdjustment = new Vector3(0.5f, 0.5f, 0);
+            _root.Children.InsertAtTop(backdropRoot);
+
             _acrylicVisual = _compositor.CreateSpriteVisual();
-            _acrylicVisual.AnchorPoint = new Vector2(0.5f, 0.5f);
-            _acrylicVisual.Size = new Vector2(-400, -200);
-            _acrylicVisual.RelativeSizeAdjustment = Vector2.One;
-            _acrylicVisual.RelativeOffsetAdjustment = new Vector3(0.5f, 0.5f, 0);
+            _acrylicVisual.RelativeSizeAdjustment = new Vector2(0.5f, 1.0f);
             _acrylicVisual.Brush = acrylicEffectBrush;
-            _root.Children.InsertAtTop(_acrylicVisual);
+            backdropRoot.Children.InsertAtTop(_acrylicVisual);
+
+            var micaEffect = new BlendEffect()
+            {
+                Mode = BlendEffectMode.Luminosity,
+                Background = new BlendEffect()
+                {
+                    Mode = BlendEffectMode.Color,
+                    Background = new GaussianBlurEffect
+                    {
+                        Source = new CompositionEffectSourceParameter("Backdrop"),
+                        BorderMode = EffectBorderMode.Hard,
+                        BlurAmount = 120
+                    },
+                    Foreground = new OpacityEffect()
+                    {
+                        Name = "LuminosityOpacity",
+                        Opacity = 1.0f,
+                        Source = new ColorSourceEffect()
+                        {
+                            Color = new Color() { A = 255, R = 243, G = 243, B = 243 },
+                        }
+                    }
+                },
+                Foreground = new OpacityEffect()
+                {
+                    Name = "TintOpacity",
+                    Opacity = 0.5f,
+                    Source = new ColorSourceEffect()
+                    {
+                        Name = "TintColor",
+                        Color = new Color() { A = 255, R = 243, G = 243, B = 243 },
+                    }
+                }
+            };
+            var micaEffectFactory = _compositor.CreateEffectFactory(micaEffect);
+            var micaEffectBrush = micaEffectFactory.CreateBrush();
+            micaEffectBrush.SetSourceParameter("Backdrop", _compositor.CreateBackdropBrush());
+
+            var micaVisual = _compositor.CreateSpriteVisual();
+            micaVisual.RelativeOffsetAdjustment = new Vector3(0.5f, 0, 0);
+            micaVisual.RelativeSizeAdjustment = new Vector2(0.5f, 1.0f);
+            micaVisual.Brush = micaEffectBrush;
+            backdropRoot.Children.InsertAtTop(micaVisual);
 
             var backgroundSurface = _compGraphics.CreateDrawingSurface(new Windows.Foundation.Size(1, 1), DirectXPixelFormat.B8G8R8A8UIntNormalized, DirectXAlphaMode.Premultiplied);
             var background = _compositor.CreateSpriteVisual();
